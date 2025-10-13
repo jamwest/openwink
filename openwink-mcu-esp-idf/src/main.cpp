@@ -65,6 +65,14 @@ void rainbow_task(void *pvParameters)
     }
 }
 
+void ble_status_task(void *pvParameters)
+{
+    while (1) {
+        ESP_LOGI(TAG, "BLE Connected: %s", bleServer.isConnected() ? "YES" : "NO");
+        vTaskDelay(pdMS_TO_TICKS(3000));  // Log every 3 seconds
+    }
+}
+
 extern "C" void app_main(void)
 {
     // Initialize NVS - required for BLE
@@ -106,6 +114,7 @@ extern "C" void app_main(void)
     
     // Create tasks
     xTaskCreate(rainbow_task, "rainbow_task", 4096, NULL, 5, NULL);
-    
+    xTaskCreate(ble_status_task, "ble_status_task", 2048, NULL, 5, NULL);
+
     ESP_LOGI(TAG, "All systems initialized");
 }
